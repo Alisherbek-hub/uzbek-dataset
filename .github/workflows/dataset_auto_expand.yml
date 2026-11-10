@@ -2,8 +2,8 @@ name: "Khorazmiy AI - Avtomatik Dataset Kengaytirish"
 
 on:
   schedule:
-    # Har kuni Toshkent vaqti bilan 10:00 da (UTC 05:00) avtomatik ishga tushadi
-    - cron: '0 5 * * *'
+    # Har kuni Toshkent vaqti bilan 10:00 va 18:00 da (UTC 05:00, 13:00) avtomatik ishga tushadi
+    - cron: '0 5,13 * * *'
   workflow_dispatch: # Istalgan payt qo'lda bitta tugma bilan ishga tushirish imkoni
 
 jobs:

@@ -97,11 +97,14 @@ def log(msg):
         pass
 
 def load_keys():
-    if not os.path.exists(KEYS_PATH):
-        raise FileNotFoundError(f"keys.json topilmadi: {KEYS_PATH}")
-    with open(KEYS_PATH, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return data.get("active_keys", []), data.get("default_model", "gemini-3.1-flash-lite")
+    env_key = os.getenv("GEMINI_API_KEY")
+    if env_key:
+        return [env_key], os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    if os.path.exists(KEYS_PATH):
+        with open(KEYS_PATH, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data.get("active_keys", []), data.get("default_model", "gemini-2.5-flash")
+    return [], "gemini-2.5-flash"
 
 class KeyRotator:
     def __init__(self, keys, model_name):
