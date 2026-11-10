@@ -1,0 +1,44 @@
+name: "Khorazmiy AI - Avtomatik Dataset Kengaytirish"
+
+on:
+  schedule:
+    # Har kuni Toshkent vaqti bilan 10:00 da (UTC 05:00) avtomatik ishga tushadi
+    - cron: '0 5 * * *'
+  workflow_dispatch: # Istalgan payt qo'lda bitta tugma bilan ishga tushirish imkoni
+
+jobs:
+  expand-dataset:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Repozitoriyni yuklash
+        uses: actions/checkout@v4
+
+      - name: Python sozlash
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Kutubxonalarni o'rnatish
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Yangi dataset topshiriqlarini generatsiya qilish
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python _cloud_automation/auto_expand_dataset.py
+
+      - name: O'zgarishlarni tekshirish va GitHubga saqlash
+        run: |
+          git config --global user.name "Khorazmiy Bot"
+          git config --global user.email "bot@khorazmiy.ai"
+          git add kodlar/ kitoblar/ dasturlash/
+          if git diff --staged --quiet; then
+            echo "Yangi o'zgarishlar yo'q."
+          else
+            git commit -m "Auto: Yangi algoritmik datasetlar qo'shildi (Avtomatik generatsiya)"
+            git push
+          fi
