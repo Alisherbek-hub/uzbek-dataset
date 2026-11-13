@@ -26,9 +26,9 @@ def main():
         if next_m < min_mod:
             min_mod = next_m
 
-    target = min(min_mod + 1, 100) # Har bir run'da 1 ta to'liq modul (20 ta tilda 1000 ta vazifa)
-    print(f"[Khorazmiy Cloud Actions] Modul {min_mod} dan {target} gacha generatsiya boshlanmoqda...")
-    run_continuous_expansion(target_module=target)
+    target = min(min_mod, 100)
+    print(f"[Khorazmiy Cloud Actions] Modul {min_mod} (target: {target}) generatsiyasi boshlanmoqda...")
+    run_continuous_expansion(start_module=min_mod, target_module=target)
     print("[Khorazmiy Cloud Actions] Ushbu bosqich muvaffaqiyatli yakunlandi!")
 
 if __name__ == "__main__":

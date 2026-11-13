@@ -15,6 +15,7 @@ import os
 import sys
 import json
 import time
+import re
 import urllib.request
 import urllib.error
 
@@ -165,10 +166,10 @@ def get_existing_modules(lang_dir):
     
     existing = set()
     for fname in os.listdir(full_dir):
-        if fname.endswith(".md") and "_" in fname:
-            parts = fname.split("_")
-            if len(parts) >= 2 and parts[1].isdigit():
-                existing.add(int(parts[1]))
+        if fname.endswith(".md"):
+            m = re.search(r"_(\d{1,3})_", fname)
+            if m:
+                existing.add(int(m.group(1)))
     return existing
 
 def generate_subbatch(rotator, lang_name, topic, start_id, end_id):
@@ -213,7 +214,7 @@ def get_topic_for_module(module_num):
     slug = f"ilgori_mavzu_{module_num}"
     return (f"{name} (Modul {module_num})", slug)
 
-def run_continuous_expansion(target_module=100):
+def run_continuous_expansion(start_module=22, target_module=100):
     keys, model_name = load_keys()
     rotator = KeyRotator(keys, model_name)
     log(f"==================================================")
@@ -221,7 +222,7 @@ def run_continuous_expansion(target_module=100):
     log(f"Model: {model_name} | Faol kalitlar soni: {len(keys)}")
     log(f"==================================================")
 
-    for module_num in range(22, target_module + 1):
+    for module_num in range(start_module, target_module + 1):
         topic_title, topic_slug = get_topic_for_module(module_num)
         start_id = (module_num - 1) * 50 + 1
         end_id = module_num * 50
